@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Visitor Log</title>
+<style>
+  body{font-family:monospace;padding:16px;background:#111;color:#eee;margin:0}
+  h2{font-family:Arial,sans-serif}
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  th,td{border:1px solid #333;padding:6px;text-align:left;vertical-align:top;word-break:break-word}
+  th{background:#222}
+  button,input{padding:8px 12px;margin:0 8px 12px 0;font-size:14px}
+  input{background:#1a1a1a;color:#eee;border:1px solid #444;border-radius:4px}
+  .wrap{overflow-x:auto}
+  #status{color:#999;font-size:13px;margin-bottom:10px}
+</style>
+</head>
+<body>
+  <h2>Visitor Log</h2>
+  <div>
+    <input id="key" type="password" placeholder="Admin key">
+    <button id="save">Save key</button>
+    <button id="refresh">Refresh</button>
+  </div>
+  <div id="status"></div>
+  <div class="wrap">
+    <table id="t">
+      <thead>
+        <tr>
+          <th>Time</th><th>IP</th><th>Country</th><th>Region</th>
+          <th>City</th><th>Device</th><th>Referer</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+<script>
+var keyInput = document.getElementById('key');
+keyInput.value = localStorage.getItem('adminKey') || '';
+
+document.getElementById('save').onclick = function () {
+  localStorage.setItem('adminKey', keyInput.value);
+  load();
+};
+document.getElementById('refresh').onclick = load;
+
+async function load() {
+  var status = document.getElementById('status');
+  var tb = document.querySelector('#t tbody');
+  status.textContent = 'Loading...';
+  try {
+    var r = await fetch('/.netlify/functions/list', {
+      headers: { 'x-admin-key': keyInput.value || '' }
+    });
+    if (r.status === 401) {
+      status.textContent = 'Wrong or missing admin key.';
+      tb.innerHTML = '';
+      return;
+    }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var data = await r.json();
+    tb.innerHTML = '';
+    if (!Array.isArray(data) || data.length === 0) {
+      tb.innerHTML = '<tr><td colspan="7">No visits yet.</td></tr>';
+      status.textContent = '';
+      return;
+    }
+    for (var i = 0; i < data.length; i++) {
+      var row = data[i];
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
+      var cells = tr.children;
+      cells[0].textContent = row.time || '';
+      cells[1].textContent = row.ip || '';
+      cells[2].textContent = row.country || '';
+      cells[3].textContent = row.region || '';
+      cells[4].textContent = row.city || '';
+      cells[5].textContent = row.device || '';
+      cells[6].textContent = row.referer || '';
+      tb.appendChild(tr);
+    }
+    status.textContent = data.length + ' visit(s).';
+  } catch (e) {
+    status.textContent = 'Error loading log: ' + e.message;
+  }
+}
+
+load();
+</script>
+</body>
+</html>

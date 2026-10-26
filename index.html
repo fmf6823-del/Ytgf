@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welcome</title>
+<style>
+  :root{color-scheme:light dark}
+  body{font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:60px auto;padding:0 20px;line-height:1.5;color:#222;background:#fff}
+  @media (prefers-color-scheme:dark){body{color:#eee;background:#111}}
+  h1{font-size:22px}
+  .box{border:1px solid #888;border-radius:8px;padding:18px;margin:20px 0}
+  ul{padding-left:20px}
+  button{padding:10px 18px;font-size:15px;margin-right:10px;cursor:pointer;border-radius:6px;border:1px solid #888}
+  #proceed{background:#1a7f37;color:#fff;border-color:#1a7f37}
+  #decline{background:transparent}
+  #result{margin-top:20px;font-size:14px}
+  #content{display:none;margin-top:30px}
+</style>
+</head>
+<body>
+
+<h1>Before you continue</h1>
+<div class="box">
+  <p>This site records basic visit information when you click <strong>Proceed</strong>:</p>
+  <ul>
+    <li>Your IP address</li>
+    <li>Approximate location (country / region / city, from your IP)</li>
+    <li>Device &amp; browser info (user agent)</li>
+    <li>The page that referred you here</li>
+    <li>Date and time of your visit</li>
+  </ul>
+  <p>This is used only to help us understand and support our visitors. Nothing is recorded unless you choose to proceed.</p>
+  <p><strong>Do you wish to proceed?</strong></p>
+  <button id="proceed">Yes, proceed</button>
+  <button id="decline">No</button>
+  <div id="result"></div>
+</div>
+
+<div id="content">
+  <h2>Welcome</h2>
+  <p>This is where your real page content goes. Replace this block with whatever you want visitors to see after they agree.</p>
+</div>
+
+<script>
+document.getElementById('decline').onclick = function () {
+  document.querySelector('.box').style.display = 'none';
+  document.getElementById('result').textContent = '';
+  var msg = document.createElement('p');
+  msg.textContent = 'Okay — nothing was recorded. You can close this page.';
+  document.body.insertBefore(msg, document.getElementById('content'));
+};
+
+document.getElementById('proceed').onclick = async function () {
+  var btn = this;
+  btn.disabled = true;
+  document.getElementById('result').textContent = 'Recording...';
+  try {
+    var r = await fetch('/.netlify/functions/log', { method: 'POST' });
+    if (!r.ok) throw new Error('log failed: ' + r.status);
+    document.getElementById('result').textContent = 'Thanks — recorded.';
+  } catch (e) {
+    document.getElementById('result').textContent = 'Could not record your visit (' + e.message + '), but you can still continue.';
+  }
+  document.querySelector('.box').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+};
+</script>
+
+</body>
+</html>
