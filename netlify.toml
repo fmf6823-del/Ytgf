@@ -6,3 +6,13 @@
   from = "/admin"
   to = "/admin.html"
   status = 200
+
+[[redirects]]
+  from = "/r/:id"
+  to = "/.netlify/functions/redirect?id=:id"
+  status = 200
+
+[[redirects]]
+  from = "/img/:id"
+  to = "/.netlify/functions/image?id=:id"
+  status = 200
