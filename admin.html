@@ -124,14 +124,12 @@
 </div>
 
 <script>
-/* ===== HARDCODED CREDENTIALS (base64) =====
-   Name: Ghost
-   Pass: R2hvc3RYOTk4OTk=
-   Both stored b64. Decoded at compare time only. */
-const B64_USER = "R2hvc3Q=";          // "Ghost"
-const B64_PASS = "UjJodmMzUllUazRPVGs9"; // base64 of "R2hvc3RYOTk4OTk="
+/* ===== HARDCODED CREDENTIALS =====
+   Username: Ghost
+   Password: 99899 */
 
-function b64decode(s){ try { return atob(s); } catch { return ""; } }
+const USER_NAME = "Ghost";
+const USER_PASS = "99899";
 
 /* ===== LOGIN ===== */
 const loginBox = document.getElementById('login');
@@ -162,9 +160,7 @@ function tryLogin() {
   const u = luser.value.trim();
   const p = lpass.value;
   if (!u || !p) { lerr.textContent = 'Enter username and password'; return; }
-  const okU = u === b64decode(B64_USER);
-  const okP = p === b64decode(B64_PASS);
-  if (okU && okP) {
+  if (u === USER_NAME && p === USER_PASS) {
     sessionStorage.setItem('ghost_auth', '1');
     showApp();
   } else {
