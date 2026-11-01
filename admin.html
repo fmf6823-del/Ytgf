@@ -7,95 +7,197 @@
 <style>
   :root{color-scheme:dark}
   *{box-sizing:border-box}
-  body{font-family:system-ui,Arial,sans-serif;padding:16px;background:#0e0e10;color:#e6e6e6;margin:0}
-  h2{margin:0 0 8px;font-size:20px}
-  h3{margin:0 0 10px;font-size:15px;color:#aaa;text-transform:uppercase;letter-spacing:1px}
-  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-  button,input,select{padding:8px 12px;font-size:14px;background:#1c1c20;color:#e6e6e6;border:1px solid #333;border-radius:6px}
-  button{cursor:pointer}
-  button:hover{background:#26262c}
-  button.danger{background:#7f1a1a;border-color:#a02020}
-  button.danger:hover{background:#a02020}
-  button.primary{background:#1a7f37;border-color:#1a7f37}
-  button.primary:hover{background:#156a2d}
+  body{font-family:system-ui,-apple-system,Arial,sans-serif;padding:20px;background:#0a0a0c;color:#e6e6e6;margin:0;min-height:100vh}
+  h1{margin:0 0 4px;font-size:22px;font-weight:700;letter-spacing:-0.3px}
+  h1 span{color:#1a7f37}
+  .sub{color:#666;font-size:13px;margin:0 0 20px}
+  h3{margin:0 0 12px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+  button,input,select{padding:9px 14px;font-size:13px;background:#16161a;color:#e6e6e6;border:1px solid #2a2a30;border-radius:6px;font-family:inherit}
+  button{cursor:pointer;transition:all .15s}
+  button:hover{background:#1f1f25;border-color:#3a3a42}
+  button.danger{background:#3a1414;border-color:#5a1e1e;color:#ff8080}
+  button.danger:hover{background:#5a1e1e}
+  button.primary{background:#1a7f37;border-color:#1a7f37;color:#fff}
+  button.primary:hover{background:#22994a;border-color:#22994a}
+  button:disabled{opacity:.5;cursor:not-allowed}
   input{flex:1;min-width:200px}
-  .panel{background:#16161a;border:1px solid #2a2a2f;border-radius:10px;padding:16px;margin-bottom:16px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
-  .card{background:#1a1a1f;border:1px solid #2a2a2f;border-radius:8px;padding:12px;font-size:13px;line-height:1.5}
-  .card .row{display:flex;justify-content:space-between;gap:8px;padding:2px 0}
-  .card .k{color:#888}
-  .card .v{color:#e6e6e6;text-align:right;word-break:break-word;max-width:60%}
-  .card a{color:#6cf;text-decoration:none}
+  input:focus,select:focus{outline:none;border-color:#1a7f37}
+  .panel{background:#121216;border:1px solid #222228;border-radius:10px;padding:18px;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+  .card{background:#16161c;border:1px solid #25252c;border-radius:10px;padding:14px;font-size:13px;line-height:1.5;transition:border-color .15s}
+  .card:hover{border-color:#35353f}
+  .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #25252c}
+  .card .row{display:flex;justify-content:space-between;gap:10px;padding:3px 0;font-size:12.5px}
+  .card .k{color:#777;flex-shrink:0}
+  .card .v{color:#e6e6e6;text-align:right;word-break:break-word;max-width:65%}
+  .card a{color:#5ab8ff;text-decoration:none}
   .card a:hover{text-decoration:underline}
-  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase}
-  .tag.link{background:#1a7f37}
-  .tag.image{background:#7f1a5e}
-  .tag.consent{background:#555}
-  .mono{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8cf}
-  .empty{text-align:center;color:#666;padding:40px;font-style:italic}
-  #status{color:#999;font-size:13px;margin-bottom:10px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+  .tag.link{background:#1a7f37;color:#fff}
+  .tag.image{background:#7f1a5e;color:#fff}
+  .tag.consent{background:#444;color:#ddd}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#7fd}
+  .empty{text-align:center;color:#555;padding:60px 20px;font-style:italic}
+  #status{color:#888;font-size:13px;margin-bottom:14px;min-height:18px}
   .row-inline{display:flex;gap:8px;flex-wrap:wrap}
-  .built{background:#0a2a12;border:1px solid #1a7f37;border-radius:6px;padding:10px;margin-top:10px;font-size:13px}
-  .built code{background:#000;padding:2px 6px;border-radius:3px;color:#8f8}
-  .hidden{display:none}
+  .built{background:#0a1f0f;border:1px solid #1a7f37;border-radius:8px;padding:12px;margin-top:12px;font-size:13px}
+  .built code{background:#000;padding:3px 8px;border-radius:4px;color:#8f8;font-family:monospace;font-size:12px}
+  .built .label{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+  .hidden{display:none !important}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+  .stat{background:#121216;border:1px solid #222228;border-radius:8px;padding:14px}
+  .stat .n{font-size:24px;font-weight:700;color:#fff;line-height:1}
+  .stat .l{font-size:11px;color:#777;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+  .sep{height:1px;background:#25252c;margin:10px 0}
+  .copy{cursor:pointer;color:#888;font-size:11px;margin-left:6px}
+  .copy:hover{color:#5ab8ff}
+
+  /* Login screen */
+  #login{max-width:380px;margin:80px auto;background:#121216;border:1px solid #222228;border-radius:12px;padding:28px}
+  #login h2{margin:0 0 6px;font-size:20px}
+  #login .sub{margin:0 0 20px}
+  #login input{width:100%;margin-bottom:10px;min-width:0}
+  #login button{width:100%;margin-top:8px;padding:11px}
+  #loginErr{color:#ff8080;font-size:12.5px;min-height:18px;margin-top:8px;text-align:center}
+  #app{display:none}
 </style>
 </head>
 <body>
 
-<div class="bar">
-  <input id="key" type="password" placeholder="Admin key">
-  <button id="save">Save key</button>
-  <button id="refresh">Refresh</button>
-  <button id="clear" class="danger">Clear all</button>
-</div>
-<div id="status"></div>
-
-<!-- BUILDER -->
-<div class="panel">
-  <h3>Build tracked link</h3>
-  <div class="row-inline">
-    <input id="target" type="url" placeholder="https://youtube.com/watch?v=..." style="flex:2">
-    <button id="build" class="primary">Build</button>
-  </div>
-  <div id="buildOut" class="built hidden"></div>
+<!-- LOGIN -->
+<div id="login">
+  <h2>🔒 Admin Login</h2>
+  <p class="sub">Enter credentials to access dashboard</p>
+  <input id="luser" type="text" placeholder="Username" autocomplete="off">
+  <input id="lpass" type="password" placeholder="Password" autocomplete="off">
+  <button id="lbtn" class="primary">Login</button>
+  <div id="loginErr"></div>
 </div>
 
-<div class="panel">
-  <h3>Upload tracked image</h3>
-  <div class="row-inline">
-    <input id="imgfile" type="file" accept="image/*" style="flex:2">
-    <button id="upload" class="primary">Upload</button>
-  </div>
-  <div id="imgOut" class="built hidden"></div>
-</div>
+<!-- APP -->
+<div id="app">
+  <h1>Visitor <span>Dashboard</span></h1>
+  <p class="sub">Self-hosted · free · no third parties beyond Netlify</p>
 
-<!-- VISITS -->
-<div class="panel">
-  <div class="bar" style="margin-bottom:10px">
-    <h3 style="margin:0">Visits</h3>
-    <select id="filter" style="margin-left:auto">
-      <option value="">All</option>
-      <option value="link">Links</option>
-      <option value="image">Images</option>
-      <option value="consent">Consent</option>
-    </select>
+  <div class="bar">
+    <input id="key" type="password" placeholder="Netlify admin key (ADMIN_KEY)">
+    <button id="save" class="primary">Save key</button>
+    <button id="refresh">Refresh</button>
+    <button id="clear" class="danger">Clear all</button>
+    <button id="logout">Logout</button>
   </div>
-  <div id="visits" class="grid"></div>
+  <div id="status"></div>
+
+  <div id="stats" class="stats hidden"></div>
+
+  <div class="panel">
+    <h3>Build tracked link</h3>
+    <div class="row-inline">
+      <input id="target" type="url" placeholder="https://youtube.com/watch?v=...">
+      <button id="build" class="primary">Build</button>
+    </div>
+    <div id="buildOut" class="built hidden"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Upload tracked image</h3>
+    <div class="row-inline">
+      <input id="imgfile" type="file" accept="image/*">
+      <button id="upload" class="primary">Upload</button>
+    </div>
+    <div id="imgOut" class="built hidden"></div>
+  </div>
+
+  <div class="panel">
+    <div class="bar" style="margin-bottom:14px">
+      <h3 style="margin:0">Visits</h3>
+      <select id="filter" style="margin-left:auto;width:auto">
+        <option value="">All types</option>
+        <option value="link">Links</option>
+        <option value="image">Images</option>
+        <option value="consent">Consent page</option>
+      </select>
+    </div>
+    <div id="visits" class="grid"></div>
+  </div>
 </div>
 
 <script>
+/* ===== HARDCODED CREDENTIALS (base64) =====
+   Name: Ghost
+   Pass: R2hvc3RYOTk4OTk=
+   Both stored b64. Decoded at compare time only. */
+const B64_USER = "R2hvc3Q=";          // "Ghost"
+const B64_PASS = "UjJodmMzUllUazRPVGs9"; // base64 of "R2hvc3RYOTk4OTk="
+
+function b64decode(s){ try { return atob(s); } catch { return ""; } }
+
+/* ===== LOGIN ===== */
+const loginBox = document.getElementById('login');
+const appBox = document.getElementById('app');
+const luser = document.getElementById('luser');
+const lpass = document.getElementById('lpass');
+const lbtn  = document.getElementById('lbtn');
+const lerr  = document.getElementById('loginErr');
+
+function checkSession() {
+  return sessionStorage.getItem('ghost_auth') === '1';
+}
+
+function showApp() {
+  loginBox.style.display = 'none';
+  appBox.style.display = 'block';
+  load();
+}
+
+function showLogin() {
+  loginBox.style.display = 'block';
+  appBox.style.display = 'none';
+  sessionStorage.removeItem('ghost_auth');
+}
+
+function tryLogin() {
+  lerr.textContent = '';
+  const u = luser.value.trim();
+  const p = lpass.value;
+  if (!u || !p) { lerr.textContent = 'Enter username and password'; return; }
+  const okU = u === b64decode(B64_USER);
+  const okP = p === b64decode(B64_PASS);
+  if (okU && okP) {
+    sessionStorage.setItem('ghost_auth', '1');
+    showApp();
+  } else {
+    lerr.textContent = 'Invalid credentials';
+    lpass.value = '';
+  }
+}
+
+lbtn.onclick = tryLogin;
+lpass.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+luser.addEventListener('keydown', e => { if (e.key === 'Enter') lpass.focus(); });
+
+document.getElementById('logout').onclick = () => {
+  if (confirm('Logout?')) showLogin();
+};
+
+if (checkSession()) showApp(); else showLogin();
+
+/* ===== DASHBOARD ===== */
 const keyInput = document.getElementById('key');
 keyInput.value = localStorage.getItem('adminKey') || '';
 let allRows = [];
 
-document.getElementById('save').onclick = () => {
+const $ = id => document.getElementById(id);
+
+$('save').onclick = () => {
   localStorage.setItem('adminKey', keyInput.value);
   load();
 };
-document.getElementById('refresh').onclick = load;
-document.getElementById('filter').onchange = render;
+$('refresh').onclick = load;
+$('filter').onchange = render;
 
-document.getElementById('clear').onclick = async () => {
+$('clear').onclick = async () => {
   if (!confirm('Delete ALL visit records? This cannot be undone.')) return;
   const r = await fetch('/.netlify/functions/clear', {
     method: 'POST',
@@ -108,46 +210,81 @@ document.getElementById('clear').onclick = async () => {
   load();
 };
 
-document.getElementById('build').onclick = async () => {
-  const target = document.getElementById('target').value.trim();
-  if (!target) return alert('Enter a URL');
-  const r = await fetch('/.netlify/functions/build', {
-    method: 'POST',
-    headers: { 'x-admin-key': keyInput.value || '', 'content-type': 'application/json' },
-    body: JSON.stringify({ target })
-  });
-  const j = await r.json();
-  if (!j.ok) return alert('Error: ' + (j.error || r.status));
-  const out = document.getElementById('buildOut');
-  out.classList.remove('hidden');
-  out.innerHTML = `
-    <div><b>Spoofed preview:</b> <code>${j.preview}</code></div>
-    <div style="margin-top:6px"><b>Share this:</b> <code>${j.short}</code></div>
-    <div style="margin-top:6px;color:#888">Visitor sees tracking notice for 3s before redirect.</div>`;
+$('build').onclick = async () => {
+  const target = $('target').value.trim();
+  if (!target) return alert('Enter a URL first');
+  const btn = $('build');
+  btn.disabled = true;
+  try {
+    const r = await fetch('/.netlify/functions/build', {
+      method: 'POST',
+      headers: { 'x-admin-key': keyInput.value || '', 'content-type': 'application/json' },
+      body: JSON.stringify({ target })
+    });
+    if (r.status === 401) throw new Error('Wrong admin key');
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'HTTP ' + r.status);
+    const out = $('buildOut');
+    out.classList.remove('hidden');
+    out.innerHTML = `
+      <div class="label">Preview</div>
+      <div><code>${escHtml(j.preview)}</code></div>
+      <div class="label" style="margin-top:10px">Share this link</div>
+      <div><code>${escHtml(j.short)}</code><span class="copy" data-copy="${escHtml(j.short)}">📋 copy</span></div>
+      <div style="color:#666;font-size:11.5px;margin-top:8px">Visitor sees tracking notice for 3s before redirect.</div>`;
+    bindCopy();
+  } catch (e) {
+    alert('Build failed: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
 };
 
-document.getElementById('upload').onclick = async () => {
-  const f = document.getElementById('imgfile').files[0];
-  if (!f) return alert('Pick an image');
-  const b64 = await new Promise((res, rej) => {
-    const fr = new FileReader();
-    fr.onload = () => res(fr.result.split(',')[1]);
-    fr.onerror = rej;
-    fr.readAsDataURL(f);
-  });
-  const r = await fetch('/.netlify/functions/upload-image', {
-    method: 'POST',
-    headers: { 'x-admin-key': keyInput.value || '', 'content-type': 'application/json' },
-    body: JSON.stringify({ data: b64, mime: f.type })
-  });
-  const j = await r.json();
-  if (!j.ok) return alert('Error: ' + (j.error || r.status));
-  const out = document.getElementById('imgOut');
-  out.classList.remove('hidden');
-  out.innerHTML = `
-    <div><b>Tracked image URL:</b> <code>${j.url}</code></div>
-    <div style="margin-top:6px;color:#888">Embed this anywhere an image can load — each view is logged.</div>`;
+$('upload').onclick = async () => {
+  const f = $('imgfile').files[0];
+  if (!f) return alert('Pick an image first');
+  const btn = $('upload');
+  btn.disabled = true;
+  try {
+    const b64 = await new Promise((res, rej) => {
+      const fr = new FileReader();
+      fr.onload = () => res(fr.result.split(',')[1]);
+      fr.onerror = rej;
+      fr.readAsDataURL(f);
+    });
+    const r = await fetch('/.netlify/functions/upload-image', {
+      method: 'POST',
+      headers: { 'x-admin-key': keyInput.value || '', 'content-type': 'application/json' },
+      body: JSON.stringify({ data: b64, mime: f.type })
+    });
+    if (r.status === 401) throw new Error('Wrong admin key');
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'HTTP ' + r.status);
+    const out = $('imgOut');
+    out.classList.remove('hidden');
+    out.innerHTML = `
+      <div class="label">Tracked image URL</div>
+      <div><code>${escHtml(j.url)}</code><span class="copy" data-copy="${escHtml(j.url)}">📋 copy</span></div>
+      <div style="color:#666;font-size:11.5px;margin-top:8px">Embed anywhere an image loads — each view logged.</div>`;
+    bindCopy();
+  } catch (e) {
+    alert('Upload failed: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
 };
+
+function bindCopy() {
+  document.querySelectorAll('.copy').forEach(el => {
+    el.onclick = () => {
+      navigator.clipboard.writeText(el.dataset.copy).then(() => {
+        const orig = el.textContent;
+        el.textContent = '✓ copied';
+        setTimeout(() => el.textContent = orig, 1200);
+      });
+    };
+  });
+}
 
 function classify(row) {
   if (row.target === '[image view]') return 'image';
@@ -155,7 +292,7 @@ function classify(row) {
   return 'consent';
 }
 
-function esc(s) {
+function escHtml(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[c]));
@@ -163,7 +300,7 @@ function esc(s) {
 
 function rowLine(k, v, isLink) {
   if (!v && v !== 0) return '';
-  const val = isLink ? `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v)}</a>` : esc(v);
+  const val = isLink ? `<a href="${escHtml(v)}" target="_blank" rel="noopener">${escHtml(v)}</a>` : escHtml(v);
   return `<div class="row"><span class="k">${k}</span><span class="v">${val}</span></div>`;
 }
 
@@ -171,15 +308,34 @@ async function enrich(ip) {
   if (!ip || ip === 'unknown') return null;
   try {
     const r = await fetch('/.netlify/functions/enrich?ip=' + encodeURIComponent(ip));
+    if (!r.ok) return null;
     const j = await r.json();
     return j.ok ? j.data : null;
   } catch { return null; }
 }
 
+function updateStats() {
+  const stats = $('stats');
+  if (allRows.length === 0) { stats.classList.add('hidden'); return; }
+  const uniq = new Set(allRows.map(r => r.ip).filter(i => i && i !== 'unknown'));
+  const links = allRows.filter(r => classify(r) === 'link').length;
+  const images = allRows.filter(r => classify(r) === 'image').length;
+  const consent = allRows.filter(r => classify(r) === 'consent').length;
+  stats.classList.remove('hidden');
+  stats.innerHTML = `
+    <div class="stat"><div class="n">${allRows.length}</div><div class="l">Total visits</div></div>
+    <div class="stat"><div class="n">${uniq.size}</div><div class="l">Unique IPs</div></div>
+    <div class="stat"><div class="n">${links}</div><div class="l">Link clicks</div></div>
+    <div class="stat"><div class="n">${images}</div><div class="l">Image views</div></div>
+    <div class="stat"><div class="n">${consent}</div><div class="l">Consent page</div></div>`;
+}
+
 async function render() {
-  const box = document.getElementById('visits');
-  const filter = document.getElementById('filter').value;
+  const box = $('visits');
+  const filter = $('filter').value;
   const rows = allRows.filter(r => !filter || classify(r) === filter);
+
+  updateStats();
 
   if (rows.length === 0) {
     box.innerHTML = '<div class="empty">No visits yet.</div>';
@@ -191,42 +347,44 @@ async function render() {
     const type = classify(row);
     const card = document.createElement('div');
     card.className = 'card';
+    const ipSafe = escHtml(row.ip);
     card.innerHTML = `
-      <div class="row"><span class="tag ${type}">${type}</span>
-        <span class="mono">${esc((row.time || '').replace('T',' ').slice(0,19))}</span></div>
-      ${row.target && row.target !== '[image view]' ? rowLine('Target', row.target, true) : ''}
-      ${row.linkId ? `<div class="row"><span class="k">Link ID</span><span class="v mono">#${esc(row.linkId)}</span></div>` : ''}
-      <hr style="border:0;border-top:1px solid #2a2a2f;margin:8px 0">
-      <div class="row"><span class="k">IP</span><span class="v"><a href="https://ipinfo.io/${esc(row.ip)}" target="_blank" rel="noopener">${esc(row.ip)}</a></span></div>
-      <div class="row"><span class="k">Location</span><span class="v" id="loc-${esc(row.ip)}">${esc([row.city,row.region,row.country].filter(Boolean).join(', ') || '—')}</span></div>
-      <div class="enrich" data-ip="${esc(row.ip)}">
-        <div class="row"><span class="k">ISP</span><span class="v">…</span></div>
+      <div class="card-head">
+        <span class="tag ${type}">${type}</span>
+        <span class="mono">${escHtml((row.time || '').replace('T',' ').slice(0,19))}</span>
       </div>
-      ${row.device ? `<div class="row"><span class="k">Device</span><span class="v">${esc(row.device.slice(0,90))}</span></div>` : ''}
+      ${row.target && row.target !== '[image view]' ? rowLine('Target', row.target, true) : ''}
+      ${row.linkId ? `<div class="row"><span class="k">Link ID</span><span class="v mono">#${escHtml(row.linkId)}</span></div>` : ''}
+      <div class="sep"></div>
+      <div class="row"><span class="k">IP</span><span class="v"><a href="https://ipinfo.io/${ipSafe}" target="_blank" rel="noopener">${ipSafe}</a></span></div>
+      <div class="row"><span class="k">Location</span><span class="v" id="loc-${ipSafe}">${escHtml([row.city,row.region,row.country].filter(Boolean).join(', ') || '—')}</span></div>
+      <div class="enrich" data-ip="${ipSafe}">
+        <div class="row"><span class="k">ISP</span><span class="v" style="color:#555">loading…</span></div>
+      </div>
+      ${row.device ? `<div class="row"><span class="k">Device</span><span class="v" title="${escHtml(row.device)}">${escHtml(row.device.slice(0,70))}${row.device.length>70?'…':''}</span></div>` : ''}
       ${row.referer ? rowLine('Referer', row.referer) : ''}
     `;
     box.appendChild(card);
   }
 
-  // Enrich each unique IP once
   const seen = new Set();
   for (const row of rows) {
-    if (!row.ip || seen.has(row.ip)) continue;
+    if (!row.ip || row.ip === 'unknown' || seen.has(row.ip)) continue;
     seen.add(row.ip);
     const info = await enrich(row.ip);
+    const enrichEl = document.querySelector('.enrich[data-ip="' + CSS.escape(row.ip) + '"]');
     if (!info) {
-      document.querySelectorAll('.enrich[data-ip="' + CSS.escape(row.ip) + '"]').forEach(el => el.remove());
+      if (enrichEl) enrichEl.remove();
       continue;
     }
-    const locEl = document.getElementById('loc-' + row.ip);
+    const locEl = $('loc-' + row.ip);
     if (locEl && (info.city || info.region || info.country)) {
       const loc = [info.city, info.region, info.country].filter(Boolean).join(', ');
       const mapLink = info.loc
         ? ` <a href="https://www.google.com/maps?q=${encodeURIComponent(info.loc)}" target="_blank" rel="noopener">📍</a>`
         : '';
-      locEl.innerHTML = esc(loc) + mapLink;
+      locEl.innerHTML = escHtml(loc) + mapLink;
     }
-    const enrichEl = document.querySelector('.enrich[data-ip="' + CSS.escape(row.ip) + '"]');
     if (enrichEl) {
       enrichEl.innerHTML = [
         rowLine('ISP', info.org),
@@ -234,33 +392,31 @@ async function render() {
         rowLine('Timezone', info.timezone),
         rowLine('Coordinates', info.loc),
         rowLine('Postal', info.postal)
-      ].filter(Boolean).join('') || '<div class="row"><span class="k">ISP</span><span class="v">—</span></div>';
+      ].filter(Boolean).join('') || '';
     }
   }
 }
 
 async function load() {
-  const status = document.getElementById('status');
+  const status = $('status');
   status.textContent = 'Loading...';
   try {
     const r = await fetch('/.netlify/functions/list', {
       headers: { 'x-admin-key': keyInput.value || '' }
     });
     if (r.status === 401) {
-      status.textContent = 'Wrong or missing admin key.';
+      status.textContent = '❌ Wrong or missing admin key.';
       allRows = []; render(); return;
     }
     if (!r.ok) throw new Error('HTTP ' + r.status);
     allRows = await r.json();
     if (!Array.isArray(allRows)) allRows = [];
-    status.textContent = allRows.length + ' record(s).';
+    status.textContent = `✓ Loaded ${allRows.length} record(s)`;
     render();
   } catch (e) {
     status.textContent = 'Error: ' + e.message;
   }
 }
-
-load();
 </script>
 </body>
 </html>
