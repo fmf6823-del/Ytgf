@@ -3,65 +3,151 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin — Visitor Log</title>
+<title>Admin — Dashboard</title>
 <style>
   :root{color-scheme:dark}
-  body{font-family:monospace;padding:16px;background:#111;color:#eee;margin:0}
-  h2{font-family:Arial,sans-serif;margin:0 0 12px}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,Arial,sans-serif;padding:16px;background:#0e0e10;color:#e6e6e6;margin:0}
+  h2{margin:0 0 8px;font-size:20px}
+  h3{margin:0 0 10px;font-size:15px;color:#aaa;text-transform:uppercase;letter-spacing:1px}
   .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-  table{border-collapse:collapse;width:100%;font-size:12px}
-  th,td{border:1px solid #333;padding:6px;text-align:left;vertical-align:top;word-break:break-word}
-  th{background:#222;position:sticky;top:0}
-  tr:hover td{background:#1a1a1a}
-  button,input,select{padding:8px 12px;font-size:14px;background:#1a1a1a;color:#eee;border:1px solid #444;border-radius:4px}
+  button,input,select{padding:8px 12px;font-size:14px;background:#1c1c20;color:#e6e6e6;border:1px solid #333;border-radius:6px}
   button{cursor:pointer}
-  .wrap{overflow-x:auto;max-height:70vh}
-  #status{color:#999;font-size:13px;margin-bottom:10px}
-  .tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px}
+  button:hover{background:#26262c}
+  button.danger{background:#7f1a1a;border-color:#a02020}
+  button.danger:hover{background:#a02020}
+  button.primary{background:#1a7f37;border-color:#1a7f37}
+  button.primary:hover{background:#156a2d}
+  input{flex:1;min-width:200px}
+  .panel{background:#16161a;border:1px solid #2a2a2f;border-radius:10px;padding:16px;margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
+  .card{background:#1a1a1f;border:1px solid #2a2a2f;border-radius:8px;padding:12px;font-size:13px;line-height:1.5}
+  .card .row{display:flex;justify-content:space-between;gap:8px;padding:2px 0}
+  .card .k{color:#888}
+  .card .v{color:#e6e6e6;text-align:right;word-break:break-word;max-width:60%}
+  .card a{color:#6cf;text-decoration:none}
+  .card a:hover{text-decoration:underline}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase}
   .tag.link{background:#1a7f37}
   .tag.image{background:#7f1a5e}
   .tag.consent{background:#555}
-  .mono{font-family:monospace;color:#8cf}
-  a{color:#6cf}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8cf}
+  .empty{text-align:center;color:#666;padding:40px;font-style:italic}
+  #status{color:#999;font-size:13px;margin-bottom:10px}
+  .row-inline{display:flex;gap:8px;flex-wrap:wrap}
+  .built{background:#0a2a12;border:1px solid #1a7f37;border-radius:6px;padding:10px;margin-top:10px;font-size:13px}
+  .built code{background:#000;padding:2px 6px;border-radius:3px;color:#8f8}
+  .hidden{display:none}
 </style>
 </head>
 <body>
-  <h2>Visitor Log</h2>
-  <div class="bar">
-    <input id="key" type="password" placeholder="Admin key">
-    <button id="save">Save key</button>
-    <button id="refresh">Refresh</button>
-    <select id="filter">
-      <option value="">All types</option>
-      <option value="link">Links only</option>
-      <option value="image">Images only</option>
-      <option value="consent">Consent page only</option>
+
+<div class="bar">
+  <input id="key" type="password" placeholder="Admin key">
+  <button id="save">Save key</button>
+  <button id="refresh">Refresh</button>
+  <button id="clear" class="danger">Clear all</button>
+</div>
+<div id="status"></div>
+
+<!-- BUILDER -->
+<div class="panel">
+  <h3>Build tracked link</h3>
+  <div class="row-inline">
+    <input id="target" type="url" placeholder="https://youtube.com/watch?v=..." style="flex:2">
+    <button id="build" class="primary">Build</button>
+  </div>
+  <div id="buildOut" class="built hidden"></div>
+</div>
+
+<div class="panel">
+  <h3>Upload tracked image</h3>
+  <div class="row-inline">
+    <input id="imgfile" type="file" accept="image/*" style="flex:2">
+    <button id="upload" class="primary">Upload</button>
+  </div>
+  <div id="imgOut" class="built hidden"></div>
+</div>
+
+<!-- VISITS -->
+<div class="panel">
+  <div class="bar" style="margin-bottom:10px">
+    <h3 style="margin:0">Visits</h3>
+    <select id="filter" style="margin-left:auto">
+      <option value="">All</option>
+      <option value="link">Links</option>
+      <option value="image">Images</option>
+      <option value="consent">Consent</option>
     </select>
   </div>
-  <div id="status"></div>
-  <div class="wrap">
-    <table id="t">
-      <thead>
-        <tr>
-          <th>Time</th><th>Type</th><th>Target / Link ID</th>
-          <th>IP</th><th>Location</th><th>Device</th><th>Referer</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <div id="visits" class="grid"></div>
+</div>
 
 <script>
-var keyInput = document.getElementById('key');
+const keyInput = document.getElementById('key');
 keyInput.value = localStorage.getItem('adminKey') || '';
-var allRows = [];
+let allRows = [];
 
-document.getElementById('save').onclick = function () {
+document.getElementById('save').onclick = () => {
   localStorage.setItem('adminKey', keyInput.value);
   load();
 };
 document.getElementById('refresh').onclick = load;
 document.getElementById('filter').onchange = render;
+
+document.getElementById('clear').onclick = async () => {
+  if (!confirm('Delete ALL visit records? This cannot be undone.')) return;
+  const r = await fetch('/.netlify/functions/clear', {
+    method: 'POST',
+    headers: { 'x-admin-key': keyInput.value || '' }
+  });
+  if (r.status === 401) return alert('Wrong admin key');
+  const j = await r.json();
+  if (!j.ok) return alert('Clear failed: ' + j.error);
+  alert('Deleted ' + j.deleted + ' record(s).');
+  load();
+};
+
+document.getElementById('build').onclick = async () => {
+  const target = document.getElementById('target').value.trim();
+  if (!target) return alert('Enter a URL');
+  const r = await fetch('/.netlify/functions/build', {
+    method: 'POST',
+    headers: { 'x-admin-key': keyInput.value || '', 'content-type': 'application/json' },
+    body: JSON.stringify({ target })
+  });
+  const j = await r.json();
+  if (!j.ok) return alert('Error: ' + (j.error || r.status));
+  const out = document.getElementById('buildOut');
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div><b>Spoofed preview:</b> <code>${j.preview}</code></div>
+    <div style="margin-top:6px"><b>Share this:</b> <code>${j.short}</code></div>
+    <div style="margin-top:6px;color:#888">Visitor sees tracking notice for 3s before redirect.</div>`;
+};
+
+document.getElementById('upload').onclick = async () => {
+  const f = document.getElementById('imgfile').files[0];
+  if (!f) return alert('Pick an image');
+  const b64 = await new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(fr.result.split(',')[1]);
+    fr.onerror = rej;
+    fr.readAsDataURL(f);
+  });
+  const r = await fetch('/.netlify/functions/upload-image', {
+    method: 'POST',
+    headers: { 'x-admin-key': keyInput.value || '', 'content-type': 'application/json' },
+    body: JSON.stringify({ data: b64, mime: f.type })
+  });
+  const j = await r.json();
+  if (!j.ok) return alert('Error: ' + (j.error || r.status));
+  const out = document.getElementById('imgOut');
+  out.classList.remove('hidden');
+  out.innerHTML = `
+    <div><b>Tracked image URL:</b> <code>${j.url}</code></div>
+    <div style="margin-top:6px;color:#888">Embed this anywhere an image can load — each view is logged.</div>`;
+};
 
 function classify(row) {
   if (row.target === '[image view]') return 'image';
@@ -69,84 +155,95 @@ function classify(row) {
   return 'consent';
 }
 
-function render() {
-  var tb = document.querySelector('#t tbody');
-  var filter = document.getElementById('filter').value;
-  tb.innerHTML = '';
-  var rows = allRows.filter(function(r){ return !filter || classify(r) === filter; });
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function rowLine(k, v, isLink) {
+  if (!v && v !== 0) return '';
+  const val = isLink ? `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v)}</a>` : esc(v);
+  return `<div class="row"><span class="k">${k}</span><span class="v">${val}</span></div>`;
+}
+
+async function enrich(ip) {
+  if (!ip || ip === 'unknown') return null;
+  try {
+    const r = await fetch('/.netlify/functions/enrich?ip=' + encodeURIComponent(ip));
+    const j = await r.json();
+    return j.ok ? j.data : null;
+  } catch { return null; }
+}
+
+async function render() {
+  const box = document.getElementById('visits');
+  const filter = document.getElementById('filter').value;
+  const rows = allRows.filter(r => !filter || classify(r) === filter);
+
   if (rows.length === 0) {
-    tb.innerHTML = '<tr><td colspan="7">No records.</td></tr>';
+    box.innerHTML = '<div class="empty">No visits yet.</div>';
     return;
   }
-  for (var i = 0; i < rows.length; i++) {
-    var row = rows[i];
-    var type = classify(row);
-    var tr = document.createElement('tr');
 
-    var tdTime = document.createElement('td');
-    tdTime.textContent = row.time || '';
+  box.innerHTML = '';
+  for (const row of rows) {
+    const type = classify(row);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="row"><span class="tag ${type}">${type}</span>
+        <span class="mono">${esc((row.time || '').replace('T',' ').slice(0,19))}</span></div>
+      ${row.target && row.target !== '[image view]' ? rowLine('Target', row.target, true) : ''}
+      ${row.linkId ? `<div class="row"><span class="k">Link ID</span><span class="v mono">#${esc(row.linkId)}</span></div>` : ''}
+      <hr style="border:0;border-top:1px solid #2a2a2f;margin:8px 0">
+      <div class="row"><span class="k">IP</span><span class="v"><a href="https://ipinfo.io/${esc(row.ip)}" target="_blank" rel="noopener">${esc(row.ip)}</a></span></div>
+      <div class="row"><span class="k">Location</span><span class="v" id="loc-${esc(row.ip)}">${esc([row.city,row.region,row.country].filter(Boolean).join(', ') || '—')}</span></div>
+      <div class="enrich" data-ip="${esc(row.ip)}">
+        <div class="row"><span class="k">ISP</span><span class="v">…</span></div>
+      </div>
+      ${row.device ? `<div class="row"><span class="k">Device</span><span class="v">${esc(row.device.slice(0,90))}</span></div>` : ''}
+      ${row.referer ? rowLine('Referer', row.referer) : ''}
+    `;
+    box.appendChild(card);
+  }
 
-    var tdType = document.createElement('td');
-    var tag = document.createElement('span');
-    tag.className = 'tag ' + type;
-    tag.textContent = type;
-    tdType.appendChild(tag);
-
-    var tdTarget = document.createElement('td');
-    if (row.target && row.target !== '[image view]') {
-      var a = document.createElement('a');
-      a.href = row.target; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = row.target.length > 48 ? row.target.slice(0,48)+'…' : row.target;
-      tdTarget.appendChild(a);
-      tdTarget.appendChild(document.createElement('br'));
+  // Enrich each unique IP once
+  const seen = new Set();
+  for (const row of rows) {
+    if (!row.ip || seen.has(row.ip)) continue;
+    seen.add(row.ip);
+    const info = await enrich(row.ip);
+    if (!info) {
+      document.querySelectorAll('.enrich[data-ip="' + CSS.escape(row.ip) + '"]').forEach(el => el.remove());
+      continue;
     }
-    if (row.linkId) {
-      var code = document.createElement('span');
-      code.className = 'mono';
-      code.textContent = '#' + row.linkId;
-      tdTarget.appendChild(code);
+    const locEl = document.getElementById('loc-' + row.ip);
+    if (locEl && (info.city || info.region || info.country)) {
+      const loc = [info.city, info.region, info.country].filter(Boolean).join(', ');
+      const mapLink = info.loc
+        ? ` <a href="https://www.google.com/maps?q=${encodeURIComponent(info.loc)}" target="_blank" rel="noopener">📍</a>`
+        : '';
+      locEl.innerHTML = esc(loc) + mapLink;
     }
-    if (!tdTarget.textContent) tdTarget.textContent = '—';
-
-    var tdIp = document.createElement('td');
-    if (row.ip && row.ip !== 'unknown') {
-      var ipA = document.createElement('a');
-      ipA.href = 'https://ipinfo.io/' + encodeURIComponent(row.ip);
-      ipA.target = '_blank'; ipA.rel = 'noopener';
-      ipA.textContent = row.ip;
-      tdIp.appendChild(ipA);
-    } else { tdIp.textContent = row.ip || ''; }
-
-    var tdLoc = document.createElement('td');
-    var parts = [row.city, row.region, row.country].filter(Boolean);
-    tdLoc.textContent = parts.join(', ') || '—';
-    if (parts.length) {
-      var mapA = document.createElement('a');
-      mapA.href = 'https://www.google.com/maps/search/' +
-        encodeURIComponent(parts.join(', '));
-      mapA.target = '_blank'; mapA.rel = 'noopener';
-      mapA.textContent = ' 📍';
-      tdLoc.appendChild(mapA);
+    const enrichEl = document.querySelector('.enrich[data-ip="' + CSS.escape(row.ip) + '"]');
+    if (enrichEl) {
+      enrichEl.innerHTML = [
+        rowLine('ISP', info.org),
+        rowLine('Hostname', info.hostname),
+        rowLine('Timezone', info.timezone),
+        rowLine('Coordinates', info.loc),
+        rowLine('Postal', info.postal)
+      ].filter(Boolean).join('') || '<div class="row"><span class="k">ISP</span><span class="v">—</span></div>';
     }
-
-    var tdDev = document.createElement('td');
-    tdDev.textContent = (row.device || '').slice(0, 80);
-
-    var tdRef = document.createElement('td');
-    tdRef.textContent = row.referer || '—';
-
-    tr.appendChild(tdTime); tr.appendChild(tdType); tr.appendChild(tdTarget);
-    tr.appendChild(tdIp); tr.appendChild(tdLoc); tr.appendChild(tdDev);
-    tr.appendChild(tdRef);
-    tb.appendChild(tr);
   }
 }
 
 async function load() {
-  var status = document.getElementById('status');
+  const status = document.getElementById('status');
   status.textContent = 'Loading...';
   try {
-    var r = await fetch('/.netlify/functions/list', {
+    const r = await fetch('/.netlify/functions/list', {
       headers: { 'x-admin-key': keyInput.value || '' }
     });
     if (r.status === 401) {
@@ -159,7 +256,7 @@ async function load() {
     status.textContent = allRows.length + ' record(s).';
     render();
   } catch (e) {
-    status.textContent = 'Error loading log: ' + e.message;
+    status.textContent = 'Error: ' + e.message;
   }
 }
 
