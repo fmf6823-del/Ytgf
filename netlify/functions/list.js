@@ -11,7 +11,7 @@ export default async (req, context) => {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const store = getStore("visits");
+    const store = getStore({ name: "visits", region: "us-east-2" });
     const { blobs } = await store.list();
 
     const records = [];
