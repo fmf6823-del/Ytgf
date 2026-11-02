@@ -7,7 +7,7 @@ export default async (req, context) => {
     const expected = process.env.ADMIN_KEY || "";
     if (expected && key !== expected) return new Response("Unauthorized", { status: 401 });
 
-    const store = getStore("visits");
+    const store = getStore({ name: "visits", region: "us-east-2" });
     const { blobs } = await store.list();
     for (const b of blobs) await store.delete(b.key);
 
