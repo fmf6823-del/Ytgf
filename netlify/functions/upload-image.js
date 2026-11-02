@@ -11,7 +11,7 @@ export default async (req, context) => {
     if (!data) return new Response(JSON.stringify({ ok: false, error: "No data" }), { status: 400 });
 
     const id = Math.random().toString(36).slice(2, 10);
-    const store = getStore("images");
+    const store = getStore({ name: "images", region: "us-east-2" });
     await store.setJSON(id, { data, mime: mime || "image/png" });
 
     const origin = new URL(req.url).origin;
