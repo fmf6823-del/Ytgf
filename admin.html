@@ -53,7 +53,6 @@
   .copy{cursor:pointer;color:#888;font-size:11px;margin-left:6px}
   .copy:hover{color:#5ab8ff}
 
-  /* Login screen */
   #login{max-width:380px;margin:80px auto;background:#121216;border:1px solid #222228;border-radius:12px;padding:28px}
   #login h2{margin:0 0 6px;font-size:20px}
   #login .sub{margin:0 0 20px}
@@ -65,7 +64,6 @@
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <h2>🔒 Admin Login</h2>
   <p class="sub">Enter credentials to access dashboard</p>
@@ -75,7 +73,6 @@
   <div id="loginErr"></div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <h1>Visitor <span>Dashboard</span></h1>
   <p class="sub">Self-hosted · free · no third parties beyond Netlify</p>
@@ -124,14 +121,9 @@
 </div>
 
 <script>
-/* ===== HARDCODED CREDENTIALS =====
-   Username: Ghost
-   Password: 99899 */
-
 const USER_NAME = "Ghost";
 const USER_PASS = "99899";
 
-/* ===== LOGIN ===== */
 const loginBox = document.getElementById('login');
 const appBox = document.getElementById('app');
 const luser = document.getElementById('luser');
@@ -179,7 +171,6 @@ document.getElementById('logout').onclick = () => {
 
 if (checkSession()) showApp(); else showLogin();
 
-/* ===== DASHBOARD ===== */
 const keyInput = document.getElementById('key');
 keyInput.value = localStorage.getItem('adminKey') || '';
 let allRows = [];
