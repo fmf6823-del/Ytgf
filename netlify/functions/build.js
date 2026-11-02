@@ -15,7 +15,7 @@ export default async (req, context) => {
     }
 
     const store = getStore("links");
-    const id = Math.random().toString(36).slice(2, 10);
+    const id = Math.random().toString(36).slice(2, 6);
     await store.setJSON(id, { target, created: new Date().toISOString() });
 
     const origin = new URL(req.url).origin;
