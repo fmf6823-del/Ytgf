@@ -14,7 +14,7 @@ export default async (req, context) => {
       });
     }
 
-    const store = getStore("links");
+    const store = getStore({ name: "links", region: "us-east-2" });
     const id = Math.random().toString(36).slice(2, 6);
     await store.setJSON(id, { target, created: new Date().toISOString() });
 
