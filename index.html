@@ -3,58 +3,105 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welcome</title>
+<title>Before you continue</title>
 <style>
-  :root{color-scheme:light dark}
-  body{font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:60px auto;padding:0 20px;line-height:1.5;color:#222;background:#fff}
-  @media (prefers-color-scheme:dark){body{color:#eee;background:#111}}
-  h1{font-size:22px}
-  .box{border:1px solid #888;border-radius:8px;padding:18px;margin:20px 0}
-  ul{padding-left:20px}
-  button{padding:10px 18px;font-size:15px;margin-right:10px;cursor:pointer;border-radius:6px;border:1px solid #888}
-  #proceed{background:#1a7f37;color:#fff;border-color:#1a7f37}
-  #decline{background:transparent}
-  #result{margin-top:20px;font-size:14px}
-  #content{display:none;margin-top:30px}
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Arial,sans-serif;margin:0;min-height:100vh;background:#0a0a0c;color:#e6e6e6;display:flex;align-items:center;justify-content:center;padding:20px}
+  .box{max-width:520px;width:100%;background:#121216;border:1px solid #222228;border-radius:12px;padding:26px;line-height:1.6}
+  h1{font-size:20px;margin:0 0 12px;font-weight:700}
+  h1 span{color:#1a7f37}
+  .sub{color:#888;font-size:13px;margin:0 0 18px}
+  ul{padding-left:20px;margin:10px 0 16px;color:#cfcfcf;font-size:14px}
+  li{margin:4px 0}
+  .note{color:#777;font-size:13px;margin:14px 0}
+  .actions{display:flex;gap:10px;margin-top:18px}
+  button{flex:1;padding:12px 16px;font-size:14px;font-family:inherit;border-radius:8px;cursor:pointer;transition:all .15s;border:1px solid #2a2a30;background:#16161a;color:#e6e6e6}
+  button:hover{background:#1f1f25;border-color:#3a3a42}
+  #proceed{background:#1a7f37;border-color:#1a7f37;color:#fff}
+  #proceed:hover{background:#22994a;border-color:#22994a}
+  #proceed:disabled{opacity:.6;cursor:not-allowed}
+  #result{margin-top:14px;font-size:13px;color:#888;min-height:18px}
+  .hidden{display:none !important}
+
+  /* Fake 404 / maintenance screen */
+  #content{text-align:center;max-width:520px;width:100%}
+  .err-code{font-size:96px;font-weight:800;line-height:1;letter-spacing:-4px;color:#1a7f37;margin:0;text-shadow:0 0 40px rgba(26,127,55,.35)}
+  .err-title{font-size:20px;font-weight:700;margin:12px 0 8px}
+  .err-msg{color:#888;font-size:14px;margin:0 0 24px}
+  .err-card{background:#121216;border:1px solid #222228;border-radius:10px;padding:18px;margin-bottom:20px;text-align:left}
+  .err-row{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:13px}
+  .err-row .k{color:#777}
+  .err-row .v{color:#e6e6e6;font-family:ui-monospace,Menlo,monospace;font-size:12px}
+  .reload{background:#16161a;border:1px solid #2a2a30;color:#e6e6e6;padding:11px 22px;font-size:14px;border-radius:8px;cursor:pointer;font-family:inherit}
+  .reload:hover{background:#1f1f25;border-color:#3a3a42}
+  .blink{animation:blink 1.2s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+  .status-line{display:flex;align-items:center;gap:8px;font-size:12px;color:#666;margin-top:14px;justify-content:center}
+  .dot{width:7px;height:7px;border-radius:50%;background:#ff2d55;box-shadow:0 0 8px #ff2d55}
 </style>
 </head>
 <body>
 
-<h1>Before you continue</h1>
-<div class="box">
-  <p>U DOOMED ROHIT <strong>Proceed</strong>:</p>
+<!-- DISCLAIMER -->
+<div class="box" id="gate">
+  <h1>Before you <span>continue</span></h1>
+  <p class="sub">This site records basic visit information when you click <strong>Proceed</strong>:</p>
   <ul>
-    <li>You got rick rolled kiddo</li>
-    <li>its a prank chill</li>
-    <li>eeeee &amp; skskks rddrdro (useussjjsjssr aieie8833gent)</li>
-    <li>The RJDJJDKDIRKRRKKR that referred you here</li>
-    <li>GKFKFKKF</li>
+    <li>Your IP address</li>
+    <li>Approximate location (country / region / city, from your IP)</li>
+    <li>Device &amp; browser info (user agent)</li>
+    <li>The page that referred you here</li>
+    <li>Date and time of your visit</li>
   </ul>
-  <p>ThiSSJJSJS.</p>
+  <p class="note">This is used only to help us understand and support our visitors. Nothing is recorded unless you choose to proceed.</p>
   <p><strong>Do you wish to proceed?</strong></p>
-  <button id="proceed">No</button>
-  <button id="decline">yes</button>
+  <div class="actions">
+    <button id="decline">No</button>
+    <button id="proceed">Yes, proceed</button>
+  </div>
   <div id="result"></div>
 </div>
 
-<div id="content">
-  <h2>Welcome</h2>
-  <p>This is where your real page content goes. Replace this block with whatever you want visitors to see after they agree.</p>
+<!-- FAKE 404 / MAINTENANCE SCREEN -->
+<div id="content" class="hidden">
+  <p class="err-code">404</p>
+  <h2 class="err-title">Page not found</h2>
+  <p class="err-msg">The server is currently under maintenance. Please try again later.</p>
+
+  <div class="err-card">
+    <div class="err-row"><span class="k">Requested URL</span><span class="v" id="reqUrl">/</span></div>
+    <div class="err-row"><span class="k">Status</span><span class="v">503 Service Unavailable</span></div>
+    <div class="err-row"><span class="k">Server</span><span class="v">nginx/1.24.0</span></div>
+    <div class="err-row"><span class="k">Timestamp</span><span class="v" id="reqTime">—</span></div>
+    <div class="err-row"><span class="k">Reference</span><span class="v" id="reqRef">—</span></div>
+  </div>
+
+  <button class="reload" onclick="location.reload()">↻ Reload page</button>
+
+  <div class="status-line">
+    <span class="dot blink"></span>
+    <span>Attempting to reconnect&hellip;</span>
+  </div>
 </div>
 
 <script>
+/* Decline handler — kept identical in behavior */
 document.getElementById('decline').onclick = function () {
   document.querySelector('.box').style.display = 'none';
   document.getElementById('result').textContent = '';
   var msg = document.createElement('p');
   msg.textContent = 'Okay — nothing was recorded. You can close this page.';
-  document.body.insertBefore(msg, document.getElementById('content'));
+  msg.style.color = '#888';
+  document.body.appendChild(msg);
 };
 
+/* Proceed handler — same /log call, then fake 404 screen */
 document.getElementById('proceed').onclick = async function () {
   var btn = this;
   btn.disabled = true;
   document.getElementById('result').textContent = 'Recording...';
+
   try {
     var r = await fetch('/.netlify/functions/log', { method: 'POST' });
     if (!r.ok) throw new Error('log failed: ' + r.status);
@@ -62,8 +109,17 @@ document.getElementById('proceed').onclick = async function () {
   } catch (e) {
     document.getElementById('result').textContent = 'Could not record your visit (' + e.message + '), but you can still continue.';
   }
-  document.querySelector('.box').style.display = 'none';
-  document.getElementById('content').style.display = 'block';
+
+  // Swap to the fake 404 / maintenance screen
+  document.getElementById('gate').classList.add('hidden');
+
+  // Populate plausible-looking server details
+  var now = new Date();
+  document.getElementById('reqUrl').textContent = location.pathname;
+  document.getElementById('reqTime').textContent = now.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+  document.getElementById('reqRef').textContent = 'ERR-' + Math.random().toString(36).slice(2, 10).toUpperCase();
+
+  document.getElementById('content').classList.remove('hidden');
 };
 </script>
 
