@@ -13,12 +13,12 @@ export default async (req, context) => {
   const id = url.searchParams.get("id");
   if (!id) return errPage("No link specified", 400);
 
-  const links = getStore("links");
+  const links = getStore({ name: "links", region: "us-east-2" });
   const link = await links.get(id, { type: "json" });
   if (!link) return errPage("Link not found or expired", 404);
 
   try {
-    const visits = getStore("visits");
+    const visits = getStore({ name: "visits", region: "us-east-2" });
     const geo = context.geo || {};
     const ip = context.ip || req.headers.get("x-nf-client-connection-ip") || "unknown";
     await visits.setJSON(
@@ -35,7 +35,9 @@ export default async (req, context) => {
         target: link.target
       }
     );
-  } catch {}
+  } catch (e) {
+    console.error("log failed:", e);
+  }
 
   const safeTarget = link.target.replace(/"/g, "&quot;");
   const html = `<!DOCTYPE html>
