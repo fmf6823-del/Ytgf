@@ -10,12 +10,12 @@ export default async (req, context) => {
   const id = url.searchParams.get("id");
   if (!id) return new Response(PNG_1x1, { status: 200, headers: { "content-type": "image/png" } });
 
-  const images = getStore("images");
+  const images = getStore({ name: "images", region: "us-east-2" });
   const img = await images.get(id, { type: "json" });
   if (!img) return new Response(PNG_1x1, { status: 200, headers: { "content-type": "image/png" } });
 
   try {
-    const visits = getStore("visits");
+    const visits = getStore({ name: "visits", region: "us-east-2" });
     const geo = context.geo || {};
     const ip = context.ip || req.headers.get("x-nf-client-connection-ip") || "unknown";
     await visits.setJSON(
@@ -32,7 +32,9 @@ export default async (req, context) => {
         target: "[image view]"
       }
     );
-  } catch {}
+  } catch (e) {
+    console.error("image log failed:", e);
+  }
 
   const buf = Buffer.from(img.data, "base64");
   return new Response(buf, {
